@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         retreive.setOnClickListener {
             getCar()
         }
-
+        getrealtimeupdates()
     }
 
     private fun savecar(cars: cars)= CoroutineScope(Dispatchers.IO).launch {
@@ -73,5 +73,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun getrealtimeupdates(){
+        carcollection.addSnapshotListener{querysnapshot,FirebaseFireStoreException ->
+            FirebaseFireStoreException?.let {
+                Toast.makeText(this,it.message,Toast.LENGTH_LONG).show()
+                return@addSnapshotListener
+            }
+
+            querysnapshot?.let {
+                val sb=StringBuilder()
+                for(document in querysnapshot.documents){
+                    val car=document.toObject<cars>()
+                    val name= car?.modelname
+                    val color=car?.color
+                    sb.append("$name\n$color\n")
+                }
+                view.text=sb.toString()
+            }
+        }
     }
 }
