@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -18,14 +19,21 @@ class MainActivity : AppCompatActivity() {
     private val carcollection= Firebase.firestore.collection("Cars")
     lateinit var view:TextView
     lateinit var search:EditText
+    lateinit var modelname:EditText
+    lateinit var colorname:EditText
+    lateinit var newmodelname:EditText
+    lateinit var newcolorname:EditText
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val modelname:EditText=findViewById(R.id.et1)
-        val colorname:EditText=findViewById(R.id.et2)
-        val save: Button =findViewById(R.id.button)
+        modelname=findViewById(R.id.et1)
+        colorname=findViewById(R.id.et2)
+        newmodelname=findViewById(R.id.et4)
+        newcolorname=findViewById(R.id.et6)
+        val save: Button =findViewById(R.id.button2)
         val retreive:Button=findViewById(R.id.carbutton)
+        val update:Button=findViewById(R.id.button)
         search=findViewById(R.id.et3)
         view=findViewById(R.id.textView)
 
@@ -38,7 +46,12 @@ class MainActivity : AppCompatActivity() {
         retreive.setOnClickListener {
             getCar()
         }
-        getrealtimeupdates()
+        //getrealtimeupdates()
+        update.setOnClickListener {
+            val oldcar=getoldcar()
+            val newcar=getnewcar()
+            updatecar(oldcar, newcar)
+        }
     }
 
     private fun savecar(cars: cars)= CoroutineScope(Dispatchers.IO).launch {
@@ -97,4 +110,52 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+     private fun getoldcar():cars{
+         val carname=modelname.text.toString()
+         val carcolor=colorname.text.toString()
+         return cars(carname,carcolor)
+     }
+
+    private fun getnewcar():Map<String,Any>{
+        val newcarname=newmodelname.text.toString()
+        val newcarcolor=newcolorname.text.toString()
+        val map= mutableMapOf<String,Any>()
+        if(newcarname.isNotEmpty()){
+            map["modelname"]=newcarname
+        }
+            if(newcarcolor.isNotEmpty()){
+                map["color"]=newcarcolor
+        }
+
+        return map
+    }
+
+    private fun updatecar(oldcar: cars,newcar:Map<String,Any>)= CoroutineScope(Dispatchers.IO).launch {
+        val carquery=carcollection.whereEqualTo("modelname",oldcar.modelname)
+            .whereEqualTo("color",oldcar.color).get().await()
+
+        if(carquery.documents.isNotEmpty()){
+            try{
+                for(documents in carquery){
+                    carcollection.document(documents.id).set(
+                        newcar,
+                        SetOptions.merge()
+
+                    )
+
+                }
+            }catch (e:Exception){
+                withContext(Dispatchers.Main){
+                    Toast.makeText(this@MainActivity,e.message,Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        else{
+            withContext(Dispatchers.Main){
+                Toast.makeText(this@MainActivity,"Car not found in the database",Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
 }
