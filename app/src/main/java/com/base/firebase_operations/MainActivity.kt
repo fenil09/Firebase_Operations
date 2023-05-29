@@ -17,6 +17,7 @@ import java.lang.StringBuilder
 class MainActivity : AppCompatActivity() {
     private val carcollection= Firebase.firestore.collection("Cars")
     lateinit var view:TextView
+    lateinit var search:EditText
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         val colorname:EditText=findViewById(R.id.et2)
         val save: Button =findViewById(R.id.button)
         val retreive:Button=findViewById(R.id.carbutton)
+        search=findViewById(R.id.et3)
         view=findViewById(R.id.textView)
 
         save.setOnClickListener {
@@ -55,9 +57,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCar() = CoroutineScope(Dispatchers.IO).launch {
+        val searchparameter=search.text.toString()
 
         try{
-            val querySnapshot=carcollection.get().await()
+            val querySnapshot=carcollection.whereEqualTo("modelname",searchparameter).get().await()
             val sb=StringBuilder()
             for(document in querySnapshot.documents){
                 val car=document.toObject<cars>()
