@@ -53,6 +53,10 @@ class MainActivity : AppCompatActivity() {
             val newcar=getnewcar()
             updatecar(oldcar, newcar)
         }
+        delete.setOnClickListener {
+            val car=getoldcar()
+            DeleteCar(car)
+        }
     }
 
     private fun savecar(cars: cars)= CoroutineScope(Dispatchers.IO).launch {
