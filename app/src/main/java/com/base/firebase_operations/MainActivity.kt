@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         val save: Button =findViewById(R.id.button2)
         val retreive:Button=findViewById(R.id.carbutton)
         val update:Button=findViewById(R.id.button)
+        val delete:Button=findViewById(R.id.button3)
         search=findViewById(R.id.et3)
         view=findViewById(R.id.textView)
 
@@ -74,14 +75,22 @@ class MainActivity : AppCompatActivity() {
 
         try{
             val querySnapshot=carcollection.whereEqualTo("modelname",searchparameter).get().await()
-            val sb=StringBuilder()
-            for(document in querySnapshot.documents){
-                val car=document.toObject<cars>()
-                sb.append("$car\n")
+            if(querySnapshot.documents.isNotEmpty()){
+                val sb=StringBuilder()
+                for(document in querySnapshot.documents){
+                    val car=document.toObject<cars>()
+                    sb.append("$car\n")
+                }
+                withContext(Dispatchers.Main){
+                    view.text=sb.toString()
+                }
             }
-            withContext(Dispatchers.Main){
-                view.text=sb.toString()
+            else{
+                withContext(Dispatchers.Main){
+                    Toast.makeText(this@MainActivity,"Sorry record does not exist in the Database",Toast.LENGTH_LONG).show()
+                }
             }
+
         }
         catch(e:Exception){
             withContext(Dispatchers.Main){
@@ -154,6 +163,30 @@ class MainActivity : AppCompatActivity() {
         else{
             withContext(Dispatchers.Main){
                 Toast.makeText(this@MainActivity,"Car not found in the database",Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun DeleteCar(cars: cars)=CoroutineScope(Dispatchers.IO).launch {
+        val carquery=carcollection.whereEqualTo("modelname",cars.modelname).whereEqualTo("color",cars.color).get().await()
+
+        if(carquery.documents.isNotEmpty()){
+            try{
+                for(documents in carquery){
+                    carcollection.document(documents.id).delete().await()
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(this@MainActivity,"Record is been deleted",Toast.LENGTH_LONG).show()
+                    }
+                }
+            }catch (e:Exception){
+                withContext(Dispatchers.Main){
+                    Toast.makeText(this@MainActivity,e.message,Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        else{
+            withContext(Dispatchers.Main){
+                Toast.makeText(this@MainActivity,"Sorry car not found",Toast.LENGTH_LONG).show()
             }
         }
     }
