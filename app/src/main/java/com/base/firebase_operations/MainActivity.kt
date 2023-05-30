@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         retreive.setOnClickListener {
             getCar()
         }
+        getrealtimeupdates()
         //getrealtimeupdates()
         update.setOnClickListener {
             val oldcar=getoldcar()
