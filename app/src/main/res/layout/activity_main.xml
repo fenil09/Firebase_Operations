@@ -41,8 +41,8 @@
             android:id="@+id/et1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintVertical_bias="0.249"/>
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.004"
+            app:layout_constraintVertical_bias="0.102"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,8 +53,8 @@
             android:id="@+id/et2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintVertical_bias="0.383"/>
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.079"
+            app:layout_constraintVertical_bias="0.259"/>
     <Button
             android:text="update Data"
             android:layout_width="wrap_content"
@@ -77,8 +77,8 @@
             android:layout_height="wrap_content" android:id="@+id/carbutton"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.454"
-            app:layout_constraintVertical_bias="0.991"/>
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.213"
+            app:layout_constraintVertical_bias="0.976"/>
     <TextView
             android:text="TextView"
             android:textColor="@color/black"
@@ -99,5 +99,12 @@
             android:id="@+id/et3"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.497" app:layout_constraintVertical_bias="0.38"/>
+            app:layout_constraintHorizontal_bias="0.134" app:layout_constraintVertical_bias="0.37"/>
+    <Button
+            android:text="Delete Data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/button3"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.976" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.804"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
