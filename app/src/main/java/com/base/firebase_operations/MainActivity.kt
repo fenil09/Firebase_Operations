@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         val retreive:Button=findViewById(R.id.carbutton)
         val update:Button=findViewById(R.id.button)
         val delete:Button=findViewById(R.id.button3)
+        val transaction:Button=findViewById(R.id.button4)
         search=findViewById(R.id.et3)
         view=findViewById(R.id.textView)
 
@@ -56,6 +57,10 @@ class MainActivity : AppCompatActivity() {
         delete.setOnClickListener {
             val car=getoldcar()
             DeleteCar(car)
+        }
+
+        transaction.setOnClickListener {
+            Transaction("7i9TIKreD1iztUJynCjh")
         }
     }
 
@@ -191,6 +196,27 @@ class MainActivity : AppCompatActivity() {
         else{
             withContext(Dispatchers.Main){
                 Toast.makeText(this@MainActivity,"Sorry car not found",Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun Transaction(carid:String)= CoroutineScope(Dispatchers.IO).launch {
+        try{
+            Firebase.firestore.runTransaction { transaction->
+                val carreference=carcollection.document(carid)
+                val cardocument=transaction.get(carreference)
+                var currentcarname=cardocument["modelname"] as String
+                currentcarname="Audi"
+                transaction.update(carreference,"modelname",currentcarname)
+                null
+            }.await()
+            withContext(Dispatchers.Main){
+                Toast.makeText(this@MainActivity,"Transaction Successfull",Toast.LENGTH_LONG).show()
+            }
+
+        }catch (e:Exception){
+            withContext(Dispatchers.Main){
+                Toast.makeText(this@MainActivity,e.message,Toast.LENGTH_LONG).show()
             }
         }
     }
