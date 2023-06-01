@@ -1,6 +1,7 @@
 package com.base.firebase_operations
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         modelname=findViewById(R.id.et1)
         colorname=findViewById(R.id.et2)
         newmodelname=findViewById(R.id.et4)
-        newcolorname=findViewById(R.id.et6)
+        newcolorname=findViewById(R.id.et7)
         val save: Button =findViewById(R.id.button2)
         val retreive:Button=findViewById(R.id.carbutton)
         val update:Button=findViewById(R.id.button)
@@ -61,6 +62,10 @@ class MainActivity : AppCompatActivity() {
 
         transaction.setOnClickListener {
             Transaction("7i9TIKreD1iztUJynCjh")
+        }
+        view.setOnClickListener {
+            val intent: Intent =Intent(this@MainActivity,MainActivity2::class.java)
+            startActivity(intent)
         }
     }
 
@@ -206,7 +211,7 @@ class MainActivity : AppCompatActivity() {
                 val carreference=carcollection.document(carid)
                 val cardocument=transaction.get(carreference)
                 var currentcarname=cardocument["modelname"] as String
-                currentcarname="Audi"
+                currentcarname="Audi44"
                 transaction.update(carreference,"modelname",currentcarname)
                 null
             }.await()
