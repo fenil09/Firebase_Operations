@@ -1,6 +1,8 @@
 package com.base.firebase_operations
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,11 +23,13 @@ class MainActivity2 : AppCompatActivity() {
     private var currentfile: Uri?=null
     lateinit var imageholder:ImageView
     val imagereff=Firebase.storage.reference
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
         imageholder=findViewById(R.id.viewimage)
         val upload: Button=findViewById(R.id.button5)
+        val download:Button=findViewById(R.id.button6)
         imageholder.setOnClickListener{
             Intent(Intent.ACTION_GET_CONTENT).also {
                 it.type="image/*"
@@ -34,6 +38,9 @@ class MainActivity2 : AppCompatActivity() {
         }
         upload.setOnClickListener {
             UploadImagetoCloud("TestImages")
+        }
+        download.setOnClickListener {
+            DownloadImage("TestImages")
         }
     }
 
@@ -56,6 +63,20 @@ class MainActivity2 : AppCompatActivity() {
                 withContext(Dispatchers.Main){
                     Toast.makeText(this@MainActivity2,"Image uploaded Successfully",Toast.LENGTH_LONG).show()
                 }
+            }
+        }catch (e:Exception){
+            withContext(Dispatchers.Main){
+                Toast.makeText(this@MainActivity2,e.message,Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+    private fun DownloadImage(filename:String) = CoroutineScope(Dispatchers.IO).launch {
+        try{
+            val maxsizedownload=5L*1024*1024
+            val bytes=imagereff.getBytes(maxsizedownload).await()
+            val bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.size)
+            withContext(Dispatchers.Main){
+                imageholder.setImageBitmap(bitmap)
             }
         }catch (e:Exception){
             withContext(Dispatchers.Main){
