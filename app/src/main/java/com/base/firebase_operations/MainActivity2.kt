@@ -82,27 +82,10 @@ class MainActivity2 : AppCompatActivity() {
     private fun DownloadImage(filename:String) = CoroutineScope(Dispatchers.IO).launch {
         try{
             val maxsizedownload=5L*1024*1024
-            val name=imagereff.child("images").name.toString()
             val bytes=imagereff.child("images/$filename").getBytes(maxsizedownload).await()
             val bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.size)
             withContext(Dispatchers.Main){
                 imageholder.setImageBitmap(bitmap)
-                Toast.makeText(this@MainActivity2,name.toString(),Toast.LENGTH_LONG).show()
-            }
-
-        }catch (e:Exception){
-            withContext(Dispatchers.Main){
-                Toast.makeText(this@MainActivity2,e.message,Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun DeleteImage(filname:String)= CoroutineScope(Dispatchers.IO).launch {
-        try{
-            imagereff.child("images/$filname").delete().await()
-            withContext(Dispatchers.Main){
-                Toast.makeText(this@MainActivity2,"Image deleted",Toast.LENGTH_LONG).show()
-                imageholder.setImageBitmap(null)
             }
         }catch (e:Exception){
             withContext(Dispatchers.Main){
