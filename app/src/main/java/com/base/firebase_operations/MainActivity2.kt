@@ -31,6 +31,7 @@ class MainActivity2 : AppCompatActivity() {
         val upload: Button=findViewById(R.id.button5)
         val download:Button=findViewById(R.id.button6)
         val delete:Button=findViewById(R.id.button7)
+        val changeScreen:Button=findViewById(R.id.button8)
         imageholder.setOnClickListener{
             Intent(Intent.ACTION_GET_CONTENT).also {
                 it.type="image/*"
@@ -38,13 +39,17 @@ class MainActivity2 : AppCompatActivity() {
             }
         }
         upload.setOnClickListener {
-            UploadImagetoCloud("TestImages")
+            UploadImagetoCloud(System.currentTimeMillis().toString())
         }
         download.setOnClickListener {
             DownloadImage("TestImages")
         }
         delete.setOnClickListener {
             DeleteImage("TestImages")
+        }
+        changeScreen.setOnClickListener {
+            val intent:Intent=Intent(this,MainActivity3::class.java)
+            startActivity(intent)
         }
     }
 
@@ -77,11 +82,14 @@ class MainActivity2 : AppCompatActivity() {
     private fun DownloadImage(filename:String) = CoroutineScope(Dispatchers.IO).launch {
         try{
             val maxsizedownload=5L*1024*1024
+            val name=imagereff.child("images").name.toString()
             val bytes=imagereff.child("images/$filename").getBytes(maxsizedownload).await()
             val bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.size)
             withContext(Dispatchers.Main){
                 imageholder.setImageBitmap(bitmap)
+                Toast.makeText(this@MainActivity2,name.toString(),Toast.LENGTH_LONG).show()
             }
+
         }catch (e:Exception){
             withContext(Dispatchers.Main){
                 Toast.makeText(this@MainActivity2,e.message,Toast.LENGTH_LONG).show()
