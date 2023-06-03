@@ -30,6 +30,7 @@ class MainActivity2 : AppCompatActivity() {
         imageholder=findViewById(R.id.viewimage)
         val upload: Button=findViewById(R.id.button5)
         val download:Button=findViewById(R.id.button6)
+        val delete:Button=findViewById(R.id.button7)
         imageholder.setOnClickListener{
             Intent(Intent.ACTION_GET_CONTENT).also {
                 it.type="image/*"
@@ -41,6 +42,9 @@ class MainActivity2 : AppCompatActivity() {
         }
         download.setOnClickListener {
             DownloadImage("TestImages")
+        }
+        delete.setOnClickListener {
+            DeleteImage("TestImages")
         }
     }
 
@@ -73,10 +77,24 @@ class MainActivity2 : AppCompatActivity() {
     private fun DownloadImage(filename:String) = CoroutineScope(Dispatchers.IO).launch {
         try{
             val maxsizedownload=5L*1024*1024
-            val bytes=imagereff.getBytes(maxsizedownload).await()
+            val bytes=imagereff.child("images/$filename").getBytes(maxsizedownload).await()
             val bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.size)
             withContext(Dispatchers.Main){
                 imageholder.setImageBitmap(bitmap)
+            }
+        }catch (e:Exception){
+            withContext(Dispatchers.Main){
+                Toast.makeText(this@MainActivity2,e.message,Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun DeleteImage(filname:String)= CoroutineScope(Dispatchers.IO).launch {
+        try{
+            imagereff.child("images/$filname").delete().await()
+            withContext(Dispatchers.Main){
+                Toast.makeText(this@MainActivity2,"Image deleted",Toast.LENGTH_LONG).show()
+                imageholder.setImageBitmap(null)
             }
         }catch (e:Exception){
             withContext(Dispatchers.Main){
