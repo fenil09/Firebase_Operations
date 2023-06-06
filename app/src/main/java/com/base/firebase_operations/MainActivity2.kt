@@ -31,6 +31,7 @@ class MainActivity2 : AppCompatActivity() {
         val upload: Button=findViewById(R.id.button5)
         val download:Button=findViewById(R.id.button6)
         val delete:Button=findViewById(R.id.button7)
+        val changeScreen:Button=findViewById(R.id.button8)
         imageholder.setOnClickListener{
             Intent(Intent.ACTION_GET_CONTENT).also {
                 it.type="image/*"
@@ -38,13 +39,17 @@ class MainActivity2 : AppCompatActivity() {
             }
         }
         upload.setOnClickListener {
-            UploadImagetoCloud("TestImages")
+            UploadImagetoCloud(System.currentTimeMillis().toString())
         }
         download.setOnClickListener {
             DownloadImage("TestImages")
         }
         delete.setOnClickListener {
             DeleteImage("TestImages")
+        }
+        changeScreen.setOnClickListener {
+            val intent:Intent=Intent(this,MainActivity3::class.java)
+            startActivity(intent)
         }
     }
 
@@ -89,12 +94,12 @@ class MainActivity2 : AppCompatActivity() {
         }
     }
 
-    private fun DeleteImage(filname:String)= CoroutineScope(Dispatchers.IO).launch {
+    private fun DeleteImage(filename: String)= CoroutineScope(Dispatchers.IO).launch {
+
         try{
-            imagereff.child("images/$filname").delete().await()
+            imagereff.child("images/$filename").delete().await()
             withContext(Dispatchers.Main){
-                Toast.makeText(this@MainActivity2,"Image deleted",Toast.LENGTH_LONG).show()
-                imageholder.setImageBitmap(null)
+                Toast.makeText(this@MainActivity2,"Image deleted successfully",Toast.LENGTH_LONG).show()
             }
         }catch (e:Exception){
             withContext(Dispatchers.Main){
