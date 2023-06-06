@@ -87,9 +87,7 @@ class MainActivity2 : AppCompatActivity() {
             val bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.size)
             withContext(Dispatchers.Main){
                 imageholder.setImageBitmap(bitmap)
-                Toast.makeText(this@MainActivity2,name.toString(),Toast.LENGTH_LONG).show()
             }
-
         }catch (e:Exception){
             withContext(Dispatchers.Main){
                 Toast.makeText(this@MainActivity2,e.message,Toast.LENGTH_LONG).show()
@@ -97,12 +95,12 @@ class MainActivity2 : AppCompatActivity() {
         }
     }
 
-    private fun DeleteImage(filname:String)= CoroutineScope(Dispatchers.IO).launch {
+    private fun DeleteImage(filename: String)= CoroutineScope(Dispatchers.IO).launch {
+
         try{
-            imagereff.child("images/$filname").delete().await()
+            imagereff.child("images/$filename").delete().await()
             withContext(Dispatchers.Main){
-                Toast.makeText(this@MainActivity2,"Image deleted",Toast.LENGTH_LONG).show()
-                imageholder.setImageBitmap(null)
+                Toast.makeText(this@MainActivity2,"Image deleted successfully",Toast.LENGTH_LONG).show()
             }
         }catch (e:Exception){
             withContext(Dispatchers.Main){

@@ -17,7 +17,9 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 
+
 class ImageAdapter(val context: Context, val uri:List<String>):RecyclerView.Adapter<ImageAdapter.imageviewholder>(){
+
     val imagereff=Firebase.storage.reference
     class imageviewholder(itemview: View):RecyclerView.ViewHolder(itemview){
       val imageholder=itemview.findViewById<ImageView>(R.id.imageView)
