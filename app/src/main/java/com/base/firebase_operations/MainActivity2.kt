@@ -82,6 +82,7 @@ class MainActivity2 : AppCompatActivity() {
     private fun DownloadImage(filename:String) = CoroutineScope(Dispatchers.IO).launch {
         try{
             val maxsizedownload=5L*1024*1024
+            val name=imagereff.child("images").name.toString()
             val bytes=imagereff.child("images/$filename").getBytes(maxsizedownload).await()
             val bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.size)
             withContext(Dispatchers.Main){
